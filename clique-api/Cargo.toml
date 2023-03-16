@@ -1,0 +1,14 @@
+[package]
+name = "clique-api"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+authors = ["Artemis <me@arty.li>"]
+description = "An HTTP API providing access to aggregated statistics from the Clique database."
+
+[dependencies]
+clique-db = { path = "../clique-db", default-features = false, features = ["q_get_user", "q_get_points", "serde"] }
+rocket = { version = "0.5.0-rc.2", features = ["json", "msgpack"] }
+serde = { version = "1", features = ["derive"] }
+toml = { version = "0.7", features = ["parse"] }
+chrono = "0.4"

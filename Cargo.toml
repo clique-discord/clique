@@ -1,0 +1,2 @@
+[workspace]
+members = ["clique-db", "clique-collector", "clique-api", "snowball"]

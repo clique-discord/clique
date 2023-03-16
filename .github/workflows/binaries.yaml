@@ -1,0 +1,68 @@
+name: Build and Publish Binaries
+
+on: push
+
+jobs:
+  draft-release:
+    name: Create draft release
+    runs-on: ubuntu-latest
+    steps:
+    - name: Create release
+      env:
+        GH_TOKEN: ${{ github.token }}
+        GH_REPO: ${{ github.repository }}
+      run: gh release create --draft "${{ github.ref }}" --title "Build ${{ github.ref }}"
+
+  build:
+    name: Build for ${{ matrix.os }}
+    needs: draft-release
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        name: [linux, windows, macos]
+
+        include:
+        - name: linux
+          os: ubuntu-latest
+          # Fragment after # is the name of the binary in the release (avoids collision between Linux and Mac binaries)
+          collector-binary: target/release/clique-collector#clique-collector-linux
+          api-binary: target/release/clique-api#clique-api-linux
+        - name: windows
+          os: windows-latest
+          collector-binary: target/release/clique-collector.exe
+          api-binary: target/release/clique-api.exe
+        - name: macos
+          os: macos-latest
+          collector-binary: target/release/clique-collector#clique-collector-macos
+          api-binary: target/release/clique-api#clique-api-macos
+
+    steps:
+    - name: Checkout project
+      uses: actions/checkout@v3
+
+    - name: Set up Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: stable
+
+    - name: Build
+      run: cargo build --release --locked
+
+    - name: Upload binaries to release
+      env:
+        GH_TOKEN: ${{ github.token }}
+        GH_REPO: ${{ github.repository }}
+      run: gh release upload "${{ github.ref }}" "${{ matrix.collector-binary }}" "${{ matrix.api-binary }}"
+
+  publish:
+    name: Publish release with binaries
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    - name: Publish release
+      env:
+        GH_TOKEN: ${{ github.token }}
+        GH_REPO: ${{ github.repository }}
+      run: gh release edit --draft false "${{ github.ref }}"

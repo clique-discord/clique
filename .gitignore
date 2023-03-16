@@ -1,0 +1,14 @@
+# Rust artifacts
+target/
+Cargo.lock
+
+# IDE settings
+.idea/
+
+# Development config files
+config.toml
+config.ini
+
+# Extra development files
+/graveyard
+/snowball

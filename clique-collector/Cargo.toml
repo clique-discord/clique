@@ -1,0 +1,18 @@
+[package]
+name = "clique-collector"
+version = "2.0.0"
+edition = "2021"
+license = "MIT"
+authors = ["Artemis <me@arty.li>"]
+description = "A service which connects to Discord and stores message metadata in a database."
+
+[dependencies]
+clique-db = { path = "../clique-db", default-features = false, features = ["q_insert_message", "q_insert_user"] }
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+toml = { version = "0.7", features = ["parse"] }
+serde = { version = "1", features = ["derive"] }
+
+[dependencies.serenity]
+default-features = false
+features = ["builder", "client", "gateway", "rustls_backend", "model", "chrono"]
+version = "0.11"
