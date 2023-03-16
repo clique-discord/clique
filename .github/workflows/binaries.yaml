@@ -24,17 +24,22 @@ jobs:
         include:
         - name: linux
           os: ubuntu-latest
-          # Fragment after # is the name of the binary in the release (avoids collision between Linux and Mac binaries)
-          collector-binary: target/release/clique-collector#clique-collector-linux
-          api-binary: target/release/clique-api#clique-api-linux
+          collector-artifact: target/release/clique-collector
+          collector-name: clique-collector-linux
+          api-artifact: target/release/clique-api
+          api-name: clique-api-linux
         - name: windows
           os: windows-latest
-          collector-binary: target/release/clique-collector.exe
-          api-binary: target/release/clique-api.exe
+          collector-artifact: target/release/clique-collector.exe
+          collector-name: clique-collector.exe
+          api-artifact: target/release/clique-api.exe
+          api-name: clique-api.exe
         - name: macos
           os: macos-latest
-          collector-binary: target/release/clique-collector#clique-collector-macos
-          api-binary: target/release/clique-api#clique-api-macos
+          collector-artifact: target/release/clique-collector
+          collector-name: clique-collector-macos
+          api-artifact: target/release/clique-api
+          api-name: clique-api-macos
 
     steps:
     - name: Checkout project
@@ -50,7 +55,10 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
         GH_REPO: ${{ github.repository }}
-      run: gh release upload "${{ github.ref }}" "${{ matrix.collector-binary }}" "${{ matrix.api-binary }}"
+      run: |
+        mv ${{ matrix.collector-artifact }} ${{ matrix.collector-name }}
+        mv ${{ matrix.api-artifact }} ${{ matrix.api-name }}
+        gh release upload "${{ github.ref }}" ${{ matrix.collector-name }} ${{ matrix.api-name }}
 
   publish:
     name: Publish release with binaries
