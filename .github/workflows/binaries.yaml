@@ -11,7 +11,7 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
         GH_REPO: ${{ github.repository }}
-      run: gh release create --draft "${{ github.ref }}" --title "Build ${{ github.ref }}"
+      run: gh release create --draft "${{ github.sha }}" --title "Build ${{ github.sha }}"
 
   build:
     name: Build for ${{ matrix.os }}
@@ -58,7 +58,7 @@ jobs:
       run: |
         mv ${{ matrix.collector-artifact }} ${{ matrix.collector-name }}
         mv ${{ matrix.api-artifact }} ${{ matrix.api-name }}
-        gh release upload "${{ github.ref }}" ${{ matrix.collector-name }} ${{ matrix.api-name }}
+        gh release upload "${{ github.sha }}" ${{ matrix.collector-name }} ${{ matrix.api-name }}
 
   publish:
     name: Publish release with binaries
@@ -70,4 +70,4 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
         GH_REPO: ${{ github.repository }}
-      run: gh release edit --draft false "${{ github.ref }}"
+      run: gh release edit --draft=false "${{ github.sha }}"
