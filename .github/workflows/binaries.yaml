@@ -17,7 +17,7 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
         GH_REPO: ${{ github.repository }}
-      run: gh release create --draft "${{ steps.tag.output.tag }}" --title "Build at $(date)"
+      run: gh release create --draft "${{ steps.tag.outputs.tag }}" --title "Build at $(date)"
 
   build:
     name: Build for ${{ matrix.os }}
