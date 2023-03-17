@@ -197,7 +197,7 @@ impl Database {
                     &(message.author as i64),
                     &(message.channel as i64),
                     &message.reply_to.map(|id| id as i64),
-                    &message.timestamp,
+                    &message.timestamp.naive_utc(),
                 ],
             )
             .await?;
